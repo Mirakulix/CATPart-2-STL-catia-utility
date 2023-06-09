@@ -1,0 +1,25 @@
+Sub CATMain()
+
+    Dim filesys, folder, filecoll, file
+    Dim documents1, partDocument1, product1
+    Dim stl_export
+
+    Set filesys = CreateObject("Scripting.FileSystemObject")
+    Set folder = filesys.GetFolder("C:\path\to\your\catpart\files")
+    Set filecoll = folder.Files
+
+    Set documents1 = CATIA.Documents
+
+    For Each file In filecoll
+        If Right(file.Name, 7) = ".CATPart" Then
+            Set partDocument1 = documents1.Open(file.Path)
+            Set product1 = partDocument1.GetItem("Part1")
+
+            stl_export = "C:\path\to\your\stl\files\" & Left(file.Name, Len(file.Name) - 8) & ".stl"
+            product1.ExportData stl_export, "stl"
+
+            partDocument1.Close
+        End If
+    Next
+
+End Sub
